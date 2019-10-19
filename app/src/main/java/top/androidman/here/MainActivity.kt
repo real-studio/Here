@@ -13,11 +13,11 @@ class MainActivity : AppCompatActivity() {
 
         Here.init(this)
 
-//        Here.put("text", 100)
+        Here.put("text", 100)
         Toast.makeText(this, Here.getInt("text").toString(), Toast.LENGTH_SHORT).show()
 
 //        Here.bucket("user").put("text", 10)
-        Toast.makeText(this, Here.bucket("user").getInt("text").toString(), Toast.LENGTH_SHORT).show()
-        Toast.makeText(this, Here.getInt("text").toString(), Toast.LENGTH_SHORT).show()
+//        Toast.makeText(this, Here.bucket("user").getInt("text").toString(), Toast.LENGTH_SHORT).show()
+//        Toast.makeText(this, Here.getInt("text").toString(), Toast.LENGTH_SHORT).show()
     }
 }

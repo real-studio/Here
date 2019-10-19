@@ -45,76 +45,32 @@ class HereImpl(var mmkv: MMKV) {
     }
 
     /**
-     * 存储Parcelable对象
-     */
-    fun <E : Parcelable> put(key: String, element: E): HereImpl {
-        mmkv.encode(key, element)
-        return this
-    }
-
-    /**
-     * 存储Boolean值
-     */
-    fun put(key: String, boolean: Boolean): HereImpl {
-        mmkv.encode(key, boolean)
-        return this
-    }
-
-    /**
-     * 存储Int值
-     */
-    fun put(key: String, int: Int): HereImpl {
-        mmkv.encode(key, int)
-        return this
-    }
-
-    /**
-     * 存储Long值
-     */
-    fun put(key: String, long: Long): HereImpl {
-        mmkv.encode(key, long)
-        return this
-    }
-
-    /**
-     * 存储Float值
-     */
-    fun put(key: String, float: Float): HereImpl {
-        mmkv.encode(key, float)
-        return this
-    }
-
-    /**
-     * 存储Double值
-     */
-    fun put(key: String, double: Double): HereImpl {
-        mmkv.encode(key, double)
-        return this
-    }
-
-    /**
-     * 存储String值
-     */
-    fun put(key: String, string: String): HereImpl {
-        mmkv.encode(key, string)
-        return this
-    }
-
-    /**
-     * 存储字节数组
-     */
-    fun put(key: String, array: ByteArray): HereImpl {
-        mmkv.encode(key, array)
-        return this
-    }
-
-    /**
      * 存储字符串集合
      */
     fun put(key: String, set: Set<String>): HereImpl {
         mmkv.encode(key, set)
         return this
     }
+
+    /**
+     * 存储数据
+     */
+    fun <E> put(key: String, value: E): HereImpl {
+        mmkv.apply {
+            when (value) {
+                is Parcelable -> encode(key, value)
+                is Boolean -> encode(key, value)
+                is ByteArray -> encode(key, value)
+                is Double -> encode(key, value)
+                is Float -> encode(key, value)
+                is Int -> encode(key, value)
+                is Long -> encode(key, value)
+                is String -> encode(key, value)
+            }
+        }
+        return this
+    }
+
 
     /**
      * 获取列表对象
@@ -145,8 +101,8 @@ class HereImpl(var mmkv: MMKV) {
     /**
      * 获取Int值
      */
-    fun getInt(key: String): Int {
-        return getInt(key, 0)
+    fun getInt(key: String): Int? {
+        return get(key, 0)
     }
 
     fun getInt(key: String, defaultValue: Int): Int {
@@ -219,6 +175,23 @@ class HereImpl(var mmkv: MMKV) {
         return mmkv.getStringSet(key, defaultValue)
     }
 
+    /**
+     * 获取值
+     */
+    private inline fun <reified E> get(key: String, defaultValue: E): E? = with(mmkv) {
+        val result: Any? = when (defaultValue) {
+            is Boolean -> decodeBool(key, defaultValue)
+            is ByteArray -> decodeBytes(key, defaultValue)
+            is Double -> decodeDouble(key, defaultValue)
+            is Float -> decodeFloat(key, defaultValue)
+            is Int -> decodeInt(key, defaultValue)
+            is Long -> decodeLong(key, defaultValue)
+            is String -> decodeString(key, defaultValue)
+            else -> null
+        }
+        return if (result is E) result else null
+    }
+
     fun clearAll() {
         mmkv.clearAll()
     }
@@ -236,7 +209,4 @@ class HereImpl(var mmkv: MMKV) {
     fun containsKey(key: String): Boolean {
         return mmkv.containsKey(key)
     }
-
-
-
 }

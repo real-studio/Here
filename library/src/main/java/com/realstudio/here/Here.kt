@@ -5,6 +5,17 @@ import android.os.Parcelable
 import com.realstudio.here.impl.HereImpl
 import com.tencent.mmkv.MMKV
 
+/**
+ * @author         yanjie
+ * @author         derlio
+ * @date     2019-10-09 14:44
+ * @version        1.0
+ * @description 键值存储
+ *
+ * @version 1.1
+ * @date     2019-10-19 18:26
+ */
+
 object Here {
 
     @JvmStatic

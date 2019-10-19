@@ -101,12 +101,12 @@ class HereImpl(var mmkv: MMKV) {
     /**
      * 获取Int值
      */
-    fun getInt(key: String): Int? {
+    fun getInt(key: String): Int {
         return get(key, 0)
     }
 
     fun getInt(key: String, defaultValue: Int): Int {
-        return mmkv.decodeInt(key, defaultValue)
+        return get(key,defaultValue)?:defaultValue
     }
 
     /**
@@ -160,10 +160,6 @@ class HereImpl(var mmkv: MMKV) {
         return mmkv.decodeBytes(key, null)
     }
 
-    fun getByteArray(key: String, defaultValue: ByteArray): ByteArray {
-        return mmkv.decodeBytes(key, defaultValue)
-    }
-
     /**
      * 获取字符串Set
      */
@@ -178,7 +174,7 @@ class HereImpl(var mmkv: MMKV) {
     /**
      * 获取值
      */
-    private inline fun <reified E> get(key: String, defaultValue: E): E? = with(mmkv) {
+    inline fun <reified E> get(key: String, defaultValue: E): E = with(mmkv) {
         val result: Any? = when (defaultValue) {
             is Boolean -> decodeBool(key, defaultValue)
             is ByteArray -> decodeBytes(key, defaultValue)
@@ -189,7 +185,7 @@ class HereImpl(var mmkv: MMKV) {
             is String -> decodeString(key, defaultValue)
             else -> null
         }
-        return if (result is E) result else null
+        return if (result is E) result else defaultValue
     }
 
     fun clearAll() {

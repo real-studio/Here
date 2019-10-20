@@ -32,9 +32,7 @@ class HereImpl(var mmkv: MMKV) {
         private fun createMMKV(bucketName: String): MMKV {
             return when (bucketName) {
                 BucketFactory.Global.name -> MMKV.defaultMMKV()
-                else -> {
-                    MMKV.mmkvWithID(bucketName) ?: MMKV.defaultMMKV()
-                }
+                else -> MMKV.mmkvWithID(bucketName)
             }
         }
     }

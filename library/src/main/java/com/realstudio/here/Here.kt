@@ -28,6 +28,11 @@ object Here {
         return HereImpl.bucket(name)
     }
 
+    @JvmStatic
+    fun bucket(name: String, block: HereImpl.() -> HereImpl): HereImpl {
+        return bucket(name).block()
+    }
+
     /**
      * 存储列表对象
      */

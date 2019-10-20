@@ -2,20 +2,23 @@ package com.realstudio.here.impl
 
 import android.os.Parcelable
 import com.tencent.mmkv.MMKV
+import java.lang.ref.WeakReference
 
 class HereImpl(var mmkv: MMKV) {
 
     companion object {
 
-        private val MAP: MutableMap<String, HereImpl> = mutableMapOf()
+        private val HERE_IMPL_MAP: MutableMap<String, WeakReference<HereImpl>> = mutableMapOf()
 
         @JvmStatic
         fun bucket(name: String): HereImpl {
             synchronized(HereImpl::class) {
-                var here = MAP[name]
+                var hereRef = HERE_IMPL_MAP[name]
+                var here = hereRef?.get()
                 if (here == null) {
                     here = HereImpl(createMMKV(name))
-                    MAP[name] = here
+                    hereRef = WeakReference(here)
+                    HERE_IMPL_MAP[name] = hereRef
                 }
                 return here
             }

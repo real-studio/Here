@@ -155,8 +155,12 @@ class HereImpl(var mmkv: MMKV) {
     /**
      * 获取字节数组
      */
-    fun getByteArray(key: String): ByteArray? {
-        return mmkv.decodeBytes(key, null)
+    fun getByteArray(key: String): ByteArray {
+        return getByteArray(key, ByteArray(0))
+    }
+
+    fun getByteArray(key: String, defaultValue: ByteArray): ByteArray {
+        return mmkv.decodeBytes(key, defaultValue)
     }
 
     /**

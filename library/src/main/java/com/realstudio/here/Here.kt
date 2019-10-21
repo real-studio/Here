@@ -1,108 +1,116 @@
 package com.realstudio.here
 
 import android.content.Context
-import android.os.Parcel
 import android.os.Parcelable
+import com.realstudio.here.impl.HereImpl
 import com.tencent.mmkv.MMKV
-import java.util.*
-
 
 /**
  * @author         yanjie
+ * @author         derlio
  * @date     2019-10-09 14:44
  * @version        1.0
  * @description 键值存储
+ *
+ * @version 1.1
+ * @date     2019-10-19 18:26
  */
 
-
 object Here {
-    private val mmkv: MMKV by lazy {
-        MMKV.defaultMMKV()
-    }
 
     @JvmStatic
     fun init(context: Context) {
         MMKV.initialize(context)
     }
 
+    @JvmStatic
+    fun bucket(name: String): HereImpl {
+        return HereImpl.bucket(name)
+    }
+
+    @JvmStatic
+    fun bucket(name: String, block: HereImpl.() -> HereImpl): HereImpl {
+        return bucket(name).block()
+    }
+
     /**
      * 存储列表对象
      */
     @JvmStatic
-    fun <E : Parcelable> put(key: String, elementList: List<E>) {
-        mmkv.encode(key, marshall(elementList))
+    fun <E : Parcelable> put(key: String, elementList: List<E>): HereImpl {
+        return HereImpl.global().put(key, elementList)
     }
 
     /**
      * 存储Parcelable对象
      */
     @JvmStatic
-    fun <E : Parcelable> put(key: String, element: E) {
-        mmkv.encode(key, element)
+    fun <E : Parcelable> put(key: String, element: E): HereImpl {
+        return HereImpl.global().put(key, element)
     }
 
     /**
      * 存储Boolean值
      */
     @JvmStatic
-    fun put(key: String, boolean: Boolean) {
-        mmkv.encode(key, boolean)
+    fun put(key: String, boolean: Boolean): HereImpl {
+        return HereImpl.global().put(key, boolean)
     }
 
     /**
      * 存储Int值
      */
     @JvmStatic
-    fun put(key: String, int: Int) {
-        mmkv.encode(key, int)
+    fun put(key: String, int: Int): HereImpl {
+        return HereImpl.global().put(key, int)
     }
 
     /**
      * 存储Long值
      */
     @JvmStatic
-    fun put(key: String, long: Long) {
-        mmkv.encode(key, long)
+    fun put(key: String, long: Long): HereImpl {
+        return HereImpl.global().put(key, long)
     }
 
     /**
      * 存储Float值
      */
     @JvmStatic
-    fun put(key: String, float: Float) {
-        mmkv.encode(key, float)
+    fun put(key: String, float: Float): HereImpl {
+        return HereImpl.global().put(key, float)
     }
 
     /**
      * 存储Double值
      */
     @JvmStatic
-    fun put(key: String, double: Double) {
-        mmkv.encode(key, double)
+    fun put(key: String, double: Double): HereImpl {
+        return HereImpl.global().put(key, double)
     }
 
     /**
      * 存储String值
      */
     @JvmStatic
-    fun put(key: String, string: String) {
-        mmkv.encode(key, string)
+    fun put(key: String, string: String): HereImpl {
+        return HereImpl.global().put(key, string)
     }
 
     /**
      * 存储字节数组
      */
     @JvmStatic
-    fun put(key: String, array: ByteArray) {
-        mmkv.encode(key, array)
+    fun put(key: String, array: ByteArray): HereImpl {
+        return HereImpl.global().put(key, array)
     }
 
     /**
      * 存储字符串集合
      */
     @JvmStatic
-    fun put(key: String, set: Set<String>) {
-        mmkv.encode(key, set)
+    fun put(key: String, set: Set<String>): HereImpl {
+        return HereImpl.global().put(key, set)
     }
 
     /**
@@ -110,8 +118,7 @@ object Here {
      */
     @JvmStatic
     fun <E : Parcelable> getList(key: String, creator: Parcelable.Creator<E>): List<E>? {
-        val bytes: ByteArray? = mmkv.decodeBytes(key)
-        return unmarshall(bytes, creator)
+        return HereImpl.global().getList(key, creator)
     }
 
     /**
@@ -119,7 +126,7 @@ object Here {
      */
     @JvmStatic
     fun <E : Parcelable> getParcelable(key: String, clazz: Class<E>): E? {
-        return mmkv.decodeParcelable(key, clazz)
+        return HereImpl.global().getParcelable(key, clazz)
     }
 
     /**
@@ -132,7 +139,7 @@ object Here {
 
     @JvmStatic
     fun getBool(key: String, defaultValue: Boolean): Boolean {
-        return mmkv.decodeBool(key, defaultValue)
+        return HereImpl.global().getBool(key, defaultValue)
     }
 
     /**
@@ -145,7 +152,7 @@ object Here {
 
     @JvmStatic
     fun getInt(key: String, defaultValue: Int): Int {
-        return mmkv.decodeInt(key, defaultValue)
+        return HereImpl.global().getInt(key, defaultValue)
     }
 
     /**
@@ -158,20 +165,20 @@ object Here {
 
     @JvmStatic
     fun getLong(key: String, defaultValue: Long): Long {
-        return mmkv.decodeLong(key, defaultValue)
+        return HereImpl.global().getLong(key, defaultValue)
     }
 
     /**
      * 获取String值
      */
     @JvmStatic
-    fun getStr(key: String): String {
-        return getStr(key, "")
+    fun getString(key: String): String {
+        return getString(key, "")
     }
 
     @JvmStatic
-    fun getStr(key: String, defaultValue: String): String {
-        return mmkv.decodeString(key, defaultValue)
+    fun getString(key: String, defaultValue: String): String {
+        return HereImpl.global().getString(key, defaultValue)
     }
 
     /**
@@ -184,7 +191,7 @@ object Here {
 
     @JvmStatic
     fun getDouble(key: String, defaultValue: Double): Double {
-        return mmkv.decodeDouble(key, defaultValue)
+        return HereImpl.global().getDouble(key, defaultValue)
     }
 
     /**
@@ -197,7 +204,7 @@ object Here {
 
     @JvmStatic
     fun getFloat(key: String, defaultValue: Float): Float {
-        return mmkv.decodeFloat(key, defaultValue)
+        return HereImpl.global().getFloat(key, defaultValue)
     }
 
     /**
@@ -205,12 +212,12 @@ object Here {
      */
     @JvmStatic
     fun getByteArray(key: String): ByteArray? {
-        return mmkv.decodeBytes(key, null)
+        return HereImpl.global().getByteArray(key)
     }
 
     @JvmStatic
     fun getByteArray(key: String, defaultValue: ByteArray): ByteArray {
-        return mmkv.decodeBytes(key, defaultValue)
+        return HereImpl.global().getByteArray(key, defaultValue)
     }
 
     /**
@@ -223,12 +230,12 @@ object Here {
 
     @JvmStatic
     fun getStringSet(key: String, defaultValue: Set<String>?): Set<String>? {
-        return mmkv.getStringSet(key, defaultValue)
+        return HereImpl.global().getStringSet(key, defaultValue)
     }
 
     @JvmStatic
     fun clearAll() {
-        mmkv.clearAll()
+        HereImpl.global().clearAll()
     }
 
     /**
@@ -236,7 +243,7 @@ object Here {
      */
     @JvmStatic
     fun removeValueForKey(key: String) {
-        mmkv.removeValueForKey(key)
+        HereImpl.global().removeValueForKey(key)
     }
 
     /**
@@ -244,40 +251,7 @@ object Here {
      */
     @JvmStatic
     fun containsKey(key: String): Boolean {
-        return mmkv.containsKey(key)
-    }
-
-    /**
-     * 将list列表转换为字节数组
-     */
-    private fun <T : Parcelable> marshall(list: List<T>?): ByteArray {
-        val parcel = Parcel.obtain()
-        parcel.setDataPosition(0)
-        if (list != null && list.isNotEmpty()) {
-            parcel.writeTypedList(list)
-        }
-        val result = parcel.marshall()
-        parcel.recycle()
-        return result
-    }
-
-    /**
-     * 将字节数组转换为list列表
-     */
-    private fun <T : Parcelable> unmarshall(
-        data: ByteArray?,
-        creator: Parcelable.Creator<T>
-    ): List<T> {
-        if (data == null) {
-            return emptyList()
-        }
-        val parcel = Parcel.obtain()
-        parcel.unmarshall(data, 0, data.size)
-        val list = ArrayList<T>()
-        parcel.setDataPosition(0)
-        parcel.readTypedList(list, creator)
-        parcel.recycle()
-        return list
+        return HereImpl.global().containsKey(key)
     }
 
 }

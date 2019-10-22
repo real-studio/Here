@@ -62,7 +62,7 @@ Here.bucket("bucket_name").removeValueForKey("key")
 * Double
 * String
 * ByteArray
-* Set<String>
+* `Set<String>`
    
 Copyright
 ---

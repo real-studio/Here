@@ -1,6 +1,6 @@
 ## Here
 
-Here 是基于腾讯[MMKV](https://github.com/Tencent/MMKV)实现的便于Android使用的Key-Value存储库。MMKV自身非常高效，使用mmap同步内存数据到文件，使用protobuf对数据进行encode/decode，读写性能远优于SharedPreference，完全可以替代SharedPreference。我们基于这些特性,使用Kotlin进行了上层的封装与拓展，使其在Android上使用更加高效便利。性能请参考[MMKV android benchmark](https://github.com/Tencent/MMKV/wiki/android_benchmark)。  
+Here 是基于腾讯[MMKV](https://github.com/Tencent/MMKV)实现便于Android使用的Key-Value存储库。MMKV自身非常高效，其内部使用mmap同步内存数据到文件，使用protobuf对数据进行encode/decode，读写性能远优于SharedPreference，在Android上完全可以替代SharedPreference使用。我们基于这些特性，进行了上层的封装与拓展，使其在Android上使用更加高效便利。性能请参考[MMKV android benchmark](https://github.com/Tencent/MMKV/wiki/android_benchmark)。  
 
 ![Baseline Performance](https://github.com/Tencent/MMKV/wiki/assets/profile_multiprocess.jpg)
 	

@@ -2,6 +2,8 @@ package com.realstudio.here
 
 import android.content.Context
 import android.os.Parcelable
+import com.realstudio.here.impl.BucketFactory
+import com.realstudio.here.impl.Config
 import com.realstudio.here.impl.HereImpl
 import com.tencent.mmkv.MMKV
 
@@ -18,27 +20,38 @@ import com.tencent.mmkv.MMKV
 
 object Here {
 
+    internal val config = Config()
+
     @JvmStatic
     fun init(context: Context) {
         MMKV.initialize(context)
     }
 
     @JvmStatic
-    fun bucket(name: String): HereImpl {
-        return HereImpl.bucket(name)
+    fun config(block: Config.() -> Unit) {
+        config.block()
     }
 
     @JvmStatic
-    fun bucket(name: String, block: HereImpl.() -> HereImpl): HereImpl {
-        return bucket(name).block()
+    fun bucket(name: String, block: (HereImpl.() -> HereImpl)? = null): HereImpl {
+        val hereImpl = HereImpl.bucket(name, config)
+        return block?.invoke(hereImpl) ?: hereImpl
     }
+
+    @JvmStatic
+    fun global() = bucket(BucketFactory.Global.name)
 
     /**
      * 存储列表对象
      */
     @JvmStatic
     fun <E : Parcelable> put(key: String, elementList: List<E>): HereImpl {
-        return HereImpl.global().put(key, elementList)
+        return global().put(key, elementList)
+    }
+
+    @JvmStatic
+    fun <E : Parcelable> put(key: String, map: Map<String, E>): HereImpl {
+        return global().put(key, map)
     }
 
     /**
@@ -46,7 +59,7 @@ object Here {
      */
     @JvmStatic
     fun <E : Parcelable> put(key: String, element: E): HereImpl {
-        return HereImpl.global().put(key, element)
+        return global().put(key, element)
     }
 
     /**
@@ -54,7 +67,7 @@ object Here {
      */
     @JvmStatic
     fun put(key: String, boolean: Boolean): HereImpl {
-        return HereImpl.global().put(key, boolean)
+        return global().put(key, boolean)
     }
 
     /**
@@ -62,7 +75,7 @@ object Here {
      */
     @JvmStatic
     fun put(key: String, int: Int): HereImpl {
-        return HereImpl.global().put(key, int)
+        return global().put(key, int)
     }
 
     /**
@@ -70,7 +83,7 @@ object Here {
      */
     @JvmStatic
     fun put(key: String, long: Long): HereImpl {
-        return HereImpl.global().put(key, long)
+        return global().put(key, long)
     }
 
     /**
@@ -78,7 +91,7 @@ object Here {
      */
     @JvmStatic
     fun put(key: String, float: Float): HereImpl {
-        return HereImpl.global().put(key, float)
+        return global().put(key, float)
     }
 
     /**
@@ -86,7 +99,7 @@ object Here {
      */
     @JvmStatic
     fun put(key: String, double: Double): HereImpl {
-        return HereImpl.global().put(key, double)
+        return global().put(key, double)
     }
 
     /**
@@ -94,7 +107,7 @@ object Here {
      */
     @JvmStatic
     fun put(key: String, string: String): HereImpl {
-        return HereImpl.global().put(key, string)
+        return global().put(key, string)
     }
 
     /**
@@ -102,7 +115,7 @@ object Here {
      */
     @JvmStatic
     fun put(key: String, array: ByteArray): HereImpl {
-        return HereImpl.global().put(key, array)
+        return global().put(key, array)
     }
 
     /**
@@ -110,7 +123,7 @@ object Here {
      */
     @JvmStatic
     fun put(key: String, set: Set<String>): HereImpl {
-        return HereImpl.global().put(key, set)
+        return global().put(key, set)
     }
 
     /**
@@ -118,7 +131,13 @@ object Here {
      */
     @JvmStatic
     fun <E : Parcelable> getList(key: String, creator: Parcelable.Creator<E>): List<E>? {
-        return HereImpl.global().getList(key, creator)
+        return global().getList(key, creator)
+    }
+
+
+    @JvmStatic
+    fun <E : Parcelable> getMap(key:String): Map<String, E?> {
+        return global().getMap(key)
     }
 
     /**
@@ -126,7 +145,7 @@ object Here {
      */
     @JvmStatic
     fun <E : Parcelable> getParcelable(key: String, clazz: Class<E>): E? {
-        return HereImpl.global().getParcelable(key, clazz)
+        return global().getParcelable(key, clazz)
     }
 
     /**
@@ -139,7 +158,7 @@ object Here {
 
     @JvmStatic
     fun getBool(key: String, defaultValue: Boolean): Boolean {
-        return HereImpl.global().getBool(key, defaultValue)
+        return global().getBool(key, defaultValue)
     }
 
     /**
@@ -152,7 +171,7 @@ object Here {
 
     @JvmStatic
     fun getInt(key: String, defaultValue: Int): Int {
-        return HereImpl.global().getInt(key, defaultValue)
+        return global().getInt(key, defaultValue)
     }
 
     /**
@@ -165,7 +184,7 @@ object Here {
 
     @JvmStatic
     fun getLong(key: String, defaultValue: Long): Long {
-        return HereImpl.global().getLong(key, defaultValue)
+        return global().getLong(key, defaultValue)
     }
 
     /**
@@ -178,7 +197,7 @@ object Here {
 
     @JvmStatic
     fun getString(key: String, defaultValue: String): String {
-        return HereImpl.global().getString(key, defaultValue)
+        return global().getString(key, defaultValue)
     }
 
     /**
@@ -191,7 +210,7 @@ object Here {
 
     @JvmStatic
     fun getDouble(key: String, defaultValue: Double): Double {
-        return HereImpl.global().getDouble(key, defaultValue)
+        return global().getDouble(key, defaultValue)
     }
 
     /**
@@ -204,7 +223,7 @@ object Here {
 
     @JvmStatic
     fun getFloat(key: String, defaultValue: Float): Float {
-        return HereImpl.global().getFloat(key, defaultValue)
+        return global().getFloat(key, defaultValue)
     }
 
     /**
@@ -212,12 +231,12 @@ object Here {
      */
     @JvmStatic
     fun getByteArray(key: String): ByteArray? {
-        return HereImpl.global().getByteArray(key)
+        return global().getByteArray(key)
     }
 
     @JvmStatic
     fun getByteArray(key: String, defaultValue: ByteArray): ByteArray {
-        return HereImpl.global().getByteArray(key, defaultValue)
+        return global().getByteArray(key, defaultValue)
     }
 
     /**
@@ -230,12 +249,12 @@ object Here {
 
     @JvmStatic
     fun getStringSet(key: String, defaultValue: Set<String>?): Set<String>? {
-        return HereImpl.global().getStringSet(key, defaultValue)
+        return global().getStringSet(key, defaultValue)
     }
 
     @JvmStatic
     fun clearAll() {
-        HereImpl.global().clearAll()
+        global().clearAll()
     }
 
     /**
@@ -243,7 +262,7 @@ object Here {
      */
     @JvmStatic
     fun removeValueForKey(key: String) {
-        HereImpl.global().removeValueForKey(key)
+        global().removeValueForKey(key)
     }
 
     /**
@@ -251,7 +270,7 @@ object Here {
      */
     @JvmStatic
     fun containsKey(key: String): Boolean {
-        return HereImpl.global().containsKey(key)
+        return global().containsKey(key)
     }
 
 }

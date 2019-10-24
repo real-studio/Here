@@ -4,19 +4,19 @@ import android.os.Parcelable
 import com.tencent.mmkv.MMKV
 import java.lang.ref.WeakReference
 
-class HereImpl(var mmkv: MMKV) {
+class HereImpl(val mmkv: MMKV) {
 
     companion object {
 
         private val HERE_IMPL_MAP: MutableMap<String, WeakReference<HereImpl>> = mutableMapOf()
 
         @JvmStatic
-        fun bucket(name: String): HereImpl {
+        fun bucket(name: String, config: Config): HereImpl {
             synchronized(HereImpl::class) {
                 var hereRef = HERE_IMPL_MAP[name]
                 var here = hereRef?.get()
                 if (here == null) {
-                    here = HereImpl(createMMKV(name))
+                    here = HereImpl(createMMKV(name, config))
                     hereRef = WeakReference(here)
                     HERE_IMPL_MAP[name] = hereRef
                 }
@@ -24,15 +24,15 @@ class HereImpl(var mmkv: MMKV) {
             }
         }
 
-        @JvmStatic
-        fun global(): HereImpl {
-            return bucket(BucketFactory.Global.name)
-        }
+        private fun createMMKV(name: String, config: Config): MMKV {
+            val mode =
+                if (config.multiProcess) MMKV.MULTI_PROCESS_MODE else MMKV.SINGLE_PROCESS_MODE
 
-        private fun createMMKV(bucketName: String): MMKV {
-            return when (bucketName) {
-                BucketFactory.Global.name -> MMKV.defaultMMKV()
-                else -> MMKV.mmkvWithID(bucketName)
+            return when (name) {
+                BucketFactory.Global.name -> MMKV.defaultMMKV(mode, config.encryptKey)
+                else -> {
+                    MMKV.mmkvWithID(name, mode, config.encryptKey)
+                }
             }
         }
     }
@@ -42,6 +42,11 @@ class HereImpl(var mmkv: MMKV) {
      */
     fun <E : Parcelable> put(key: String, elementList: List<E>): HereImpl {
         mmkv.encode(key, ParcelUtil.marshall(elementList))
+        return this
+    }
+
+    fun <E : Parcelable> put(key: String, map: Map<String, E>): HereImpl {
+        mmkv.encode(key, ParcelUtil.marshall(map))
         return this
     }
 
@@ -80,6 +85,11 @@ class HereImpl(var mmkv: MMKV) {
         return ParcelUtil.unmarshall(bytes, creator)
     }
 
+    fun <E : Parcelable> getMap(key: String): Map<String, E?> {
+        val bytes: ByteArray? = mmkv.decodeBytes(key)
+        return ParcelUtil.unmarshall(bytes)
+    }
+
     /**
      * 获取Parcelable对象
      */
@@ -106,7 +116,7 @@ class HereImpl(var mmkv: MMKV) {
     }
 
     fun getInt(key: String, defaultValue: Int): Int {
-        return get(key,defaultValue)?:defaultValue
+        return get(key, defaultValue) ?: defaultValue
     }
 
     /**

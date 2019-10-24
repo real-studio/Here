@@ -49,6 +49,11 @@ object Here {
         return global().put(key, elementList)
     }
 
+    @JvmStatic
+    fun <E : Parcelable> put(key: String, map: Map<String, E>): HereImpl {
+        return global().put(key, map)
+    }
+
     /**
      * 存储Parcelable对象
      */
@@ -127,6 +132,12 @@ object Here {
     @JvmStatic
     fun <E : Parcelable> getList(key: String, creator: Parcelable.Creator<E>): List<E>? {
         return global().getList(key, creator)
+    }
+
+
+    @JvmStatic
+    fun <E : Parcelable> getMap(key:String): Map<String, E?> {
+        return global().getMap(key)
     }
 
     /**

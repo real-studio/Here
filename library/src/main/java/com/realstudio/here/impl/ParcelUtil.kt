@@ -1,7 +1,9 @@
 package com.realstudio.here.impl
 
+import android.os.Bundle
 import android.os.Parcel
 import android.os.Parcelable
+import android.util.ArrayMap
 import java.util.ArrayList
 
 object ParcelUtil {
@@ -13,6 +15,21 @@ object ParcelUtil {
         parcel.setDataPosition(0)
         if (list != null && list.isNotEmpty()) {
             parcel.writeTypedList(list)
+        }
+        val result = parcel.marshall()
+        parcel.recycle()
+        return result
+    }
+
+    internal fun <T : Parcelable> marshall(map: Map<String, T>?): ByteArray {
+        val parcel = Parcel.obtain()
+        parcel.setDataPosition(0)
+        if (map != null && map.isNotEmpty()) {
+            val bundle = Bundle()
+            map.forEach{
+               bundle.putParcelable(it.key, it.value)
+            }
+            parcel.writeBundle(bundle)
         }
         val result = parcel.marshall()
         parcel.recycle()
@@ -33,5 +50,25 @@ object ParcelUtil {
         parcel.readTypedList(list, creator)
         parcel.recycle()
         return list
+    }
+
+    internal fun <T : Parcelable> unmarshall(data: ByteArray?): Map<String, T?> {
+        if (data == null) {
+            return emptyMap<String, T>()
+        }
+
+        val parcel = Parcel.obtain()
+        parcel.unmarshall(data, 0, data.size)
+        parcel.setDataPosition(0)
+
+        val bundle = parcel.readBundle(javaClass.classLoader)
+        val result = mutableMapOf<String, T?>()
+        bundle?.keySet()?.let {
+            for (key in it) {
+                result[key] = bundle.getParcelable(key)
+            }
+        }
+        parcel.recycle()
+        return result
     }
 }

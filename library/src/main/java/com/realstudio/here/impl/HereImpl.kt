@@ -45,6 +45,11 @@ class HereImpl(val mmkv: MMKV) {
         return this
     }
 
+    fun <E : Parcelable> put(key: String, map: Map<String, E>): HereImpl {
+        mmkv.encode(key, ParcelUtil.marshall(map))
+        return this
+    }
+
     /**
      * 存储字符串集合
      */
@@ -78,6 +83,11 @@ class HereImpl(val mmkv: MMKV) {
     fun <E : Parcelable> getList(key: String, creator: Parcelable.Creator<E>): List<E>? {
         val bytes: ByteArray? = mmkv.decodeBytes(key)
         return ParcelUtil.unmarshall(bytes, creator)
+    }
+
+    fun <E : Parcelable> getMap(key: String): Map<String, E?> {
+        val bytes: ByteArray? = mmkv.decodeBytes(key)
+        return ParcelUtil.unmarshall(bytes)
     }
 
     /**

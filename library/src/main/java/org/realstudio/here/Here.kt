@@ -1,10 +1,10 @@
-package com.realstudio.here
+package org.realstudio.here
 
 import android.content.Context
 import android.os.Parcelable
-import com.realstudio.here.impl.BucketFactory
-import com.realstudio.here.impl.Config
-import com.realstudio.here.impl.HereImpl
+import org.realstudio.here.impl.BucketFactory
+import org.realstudio.here.impl.Config
+import org.realstudio.here.impl.HereImpl
 import com.tencent.mmkv.MMKV
 
 /**

@@ -1,9 +1,8 @@
-package com.realstudio.here.impl
+package org.realstudio.here.impl
 
 import android.os.Bundle
 import android.os.Parcel
 import android.os.Parcelable
-import android.util.ArrayMap
 import java.util.ArrayList
 
 object ParcelUtil {

@@ -1,4 +1,4 @@
-package com.realstudio.here.impl
+package org.realstudio.here.impl
 
 import android.os.Parcelable
 import com.tencent.mmkv.MMKV

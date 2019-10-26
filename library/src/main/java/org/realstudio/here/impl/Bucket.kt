@@ -1,4 +1,4 @@
-package com.realstudio.here.impl
+package org.realstudio.here.impl
 
 class Bucket(val name: String, val relativePath: String? = null)
 
